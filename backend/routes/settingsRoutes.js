@@ -35,7 +35,7 @@ const validateAlertThreshold = [
 
 /**
  * @swagger
- * /settings:
+ * /api/settings:
  *   get:
  *     summary: Get settings
  *     tags: [Settings]
@@ -49,7 +49,7 @@ router.get('/', auth, settingsController.getSettings);
 
 /**
  * @swagger
- * /settings:
+ * /api/settings:
  *   put:
  *     summary: Update settings
  *     tags: [Settings]

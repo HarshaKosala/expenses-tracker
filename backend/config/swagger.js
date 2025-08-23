@@ -6,12 +6,11 @@ const getBaseUrl = () => {
   }
   
   if (process.env.NODE_ENV === 'production') {
-    const port = process.env.PORT || 5001;
     const domain = process.env.RAILWAY_STATIC_URL || 'https://api-expenses-tracker.up.railway.app';
-    return `${domain}/api`;
+    return domain;
   }
   
-  return 'http://localhost:5001/api';
+  return 'http://localhost:5001';
 };
 
 const options = {

@@ -31,7 +31,7 @@ const validateLogin = [
 
 /**
  * @swagger
- * /auth/register:
+ * /api/auth/register:
  *   post:
  *     summary: Register user
  *     tags: [Auth]
@@ -56,7 +56,7 @@ router.post('/register', validateRegister, authController.register);
 
 /**
  * @swagger
- * /auth/login:
+ * /api/auth/login:
  *   post:
  *     summary: Login user
  *     tags: [Auth]

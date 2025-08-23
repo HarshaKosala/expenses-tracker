@@ -55,7 +55,7 @@ const validateDateRange = [
 
 /**
  * @swagger
- * /expenses:
+ * /api/expenses:
  *   post:
  *     summary: Create expense
  *     tags: [Expenses]
@@ -86,7 +86,7 @@ router.post('/', auth, validateExpense, expenseController.createExpense);
 
 /**
  * @swagger
- * /expenses:
+ * /api/expenses:
  *   get:
  *     summary: Get expenses
  *     tags: [Expenses]
@@ -133,7 +133,7 @@ router.get('/top-categories', auth, expenseController.getTopCategories);
 
 /**
  * @swagger
- * /expenses/{id}:
+ * /api/expenses/{id}:
  *   get:
  *     summary: Get expense by ID
  *     tags: [Expenses]
@@ -156,7 +156,7 @@ router.get('/:id', auth, validateExpenseId, expenseController.getExpenseById);
 
 /**
  * @swagger
- * /expenses/{id}:
+ * /api/expenses/{id}:
  *   put:
  *     summary: Update expense
  *     tags: [Expenses]
@@ -196,7 +196,7 @@ router.put('/:id', auth, validateExpenseId, validateExpense, expenseController.u
 
 /**
  * @swagger
- * /expenses/{id}:
+ * /api/expenses/{id}:
  *   delete:
  *     summary: Remove expense
  *     tags: [Expenses]
