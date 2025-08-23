@@ -131,13 +131,90 @@ router.get('/by-type', auth, expenseController.getCurrentMonthExpensesByType);
 // GET /api/expenses/top-categories - Get top expense categories
 router.get('/top-categories', auth, expenseController.getTopCategories);
 
-// GET /api/expenses/:id - Get expense by ID
+/**
+ * @swagger
+ * /expenses/{id}:
+ *   get:
+ *     summary: Get expense by ID
+ *     tags: [Expenses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Expense ID
+ *     responses:
+ *       200:
+ *         description: Expense details
+ *       404:
+ *         description: Expense not found
+ */
 router.get('/:id', auth, validateExpenseId, expenseController.getExpenseById);
 
-// PUT /api/expenses/:id - Update expense
+/**
+ * @swagger
+ * /expenses/{id}:
+ *   put:
+ *     summary: Update expense
+ *     tags: [Expenses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Expense ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               amount:
+ *                 type: number
+ *               type:
+ *                 type: string
+ *                 enum: [Food, Transport, Entertainment, Shopping, Bills, Healthcare, Education, Other]
+ *               date:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       200:
+ *         description: Expense updated
+ *       404:
+ *         description: Expense not found
+ */
 router.put('/:id', auth, validateExpenseId, validateExpense, expenseController.updateExpense);
 
-// DELETE /api/expenses/:id - Remove expense
+/**
+ * @swagger
+ * /expenses/{id}:
+ *   delete:
+ *     summary: Remove expense
+ *     tags: [Expenses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Expense ID
+ *     responses:
+ *       200:
+ *         description: Expense removed
+ *       404:
+ *         description: Expense not found
+ */
 router.delete('/:id', auth, validateExpenseId, expenseController.removeExpense);
 
 module.exports = router; 
