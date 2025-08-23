@@ -29,8 +29,66 @@ const validateLogin = [
     .withMessage('Password is required')
 ];
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User registered
+ */
 router.post('/register', validateRegister, authController.register);
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
 router.post('/login', validateLogin, authController.login);
+
+/**
+ * @swagger
+ * /auth/profile:
+ *   get:
+ *     summary: Get user profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile
+ */
 router.get('/profile', auth, authController.getProfile);
 
 module.exports = router;

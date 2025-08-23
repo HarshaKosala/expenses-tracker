@@ -53,11 +53,67 @@ const validateDateRange = [
     })
 ];
 
-// Routes
-// POST /api/expenses - Create a new expense
+/**
+ * @swagger
+ * /expenses:
+ *   post:
+ *     summary: Create expense
+ *     tags: [Expenses]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               amount:
+ *                 type: number
+ *               type:
+ *                 type: string
+ *                 enum: [Food, Transport, Entertainment, Shopping, Bills, Healthcare, Education, Other]
+ *               date:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       201:
+ *         description: Expense created
+ */
 router.post('/', auth, validateExpense, expenseController.createExpense);
 
-// GET /api/expenses - Get all expenses with optional filtering
+/**
+ * @swagger
+ * /expenses:
+ *   get:
+ *     summary: Get expenses
+ *     tags: [Expenses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *         description: Filter by type
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter from date
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter until date
+ *     responses:
+ *       200:
+ *         description: List of expenses
+ */
 router.get('/', auth, validateDateRange, expenseController.getExpenses);
 
 // GET /api/expenses/current-month - Get current month expenses
