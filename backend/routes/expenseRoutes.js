@@ -53,67 +53,10 @@ const validateDateRange = [
     })
 ];
 
-/**
- * @swagger
- * /api/expenses:
- *   post:
- *     summary: Create expense
- *     tags: [Expenses]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               description:
- *                 type: string
- *               amount:
- *                 type: number
- *               type:
- *                 type: string
- *                 enum: [Food, Transport, Entertainment, Shopping, Bills, Healthcare, Education, Other]
- *               date:
- *                 type: string
- *                 format: date
- *     responses:
- *       201:
- *         description: Expense created
- */
+// POST /api/expenses - Create new expense
 router.post('/', auth, validateExpense, expenseController.createExpense);
 
-/**
- * @swagger
- * /api/expenses:
- *   get:
- *     summary: Get expenses
- *     tags: [Expenses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: type
- *         schema:
- *           type: string
- *         description: Filter by type
- *       - in: query
- *         name: startDate
- *         schema:
- *           type: string
- *           format: date
- *         description: Filter from date
- *       - in: query
- *         name: endDate
- *         schema:
- *           type: string
- *           format: date
- *         description: Filter until date
- *     responses:
- *       200:
- *         description: List of expenses
- */
+// GET /api/expenses - Get expenses
 router.get('/', auth, validateDateRange, expenseController.getExpenses);
 
 // GET /api/expenses/current-month - Get current month expenses
@@ -131,90 +74,13 @@ router.get('/by-type', auth, expenseController.getCurrentMonthExpensesByType);
 // GET /api/expenses/top-categories - Get top expense categories
 router.get('/top-categories', auth, expenseController.getTopCategories);
 
-/**
- * @swagger
- * /api/expenses/{id}:
- *   get:
- *     summary: Get expense by ID
- *     tags: [Expenses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Expense ID
- *     responses:
- *       200:
- *         description: Expense details
- *       404:
- *         description: Expense not found
- */
+// GET /api/expenses/:id - Get expense by ID
 router.get('/:id', auth, validateExpenseId, expenseController.getExpenseById);
 
-/**
- * @swagger
- * /api/expenses/{id}:
- *   put:
- *     summary: Update expense
- *     tags: [Expenses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Expense ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               description:
- *                 type: string
- *               amount:
- *                 type: number
- *               type:
- *                 type: string
- *                 enum: [Food, Transport, Entertainment, Shopping, Bills, Healthcare, Education, Other]
- *               date:
- *                 type: string
- *                 format: date
- *     responses:
- *       200:
- *         description: Expense updated
- *       404:
- *         description: Expense not found
- */
+// PUT /api/expenses/:id - Update expense
 router.put('/:id', auth, validateExpenseId, validateExpense, expenseController.updateExpense);
 
-/**
- * @swagger
- * /api/expenses/{id}:
- *   delete:
- *     summary: Remove expense
- *     tags: [Expenses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: Expense ID
- *     responses:
- *       200:
- *         description: Expense removed
- *       404:
- *         description: Expense not found
- */
+// DELETE /api/expenses/:id - Remove expense
 router.delete('/:id', auth, validateExpenseId, expenseController.removeExpense);
 
 module.exports = router; 

@@ -29,66 +29,13 @@ const validateLogin = [
     .withMessage('Password is required')
 ];
 
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Register user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       201:
- *         description: User registered
- */
+// POST /api/auth/register - Register new user
 router.post('/register', validateRegister, authController.register);
 
-/**
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Login user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- */
+// POST /api/auth/login - Login user and get JWT token 
 router.post('/login', validateLogin, authController.login);
 
-/**
- * @swagger
- * /auth/profile:
- *   get:
- *     summary: Get user profile
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: User profile
- */
+// GET /api/auth/profile - Get current user profile
 router.get('/profile', auth, authController.getProfile);
 
 module.exports = router;

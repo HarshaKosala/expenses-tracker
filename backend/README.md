@@ -53,7 +53,6 @@ NODE_ENV=development
 CORS_ORIGIN=http://localhost:5173
 DEFAULT_MONTHLY_LIMIT=10000
 JWT_SECRET=your-jwt-secret-key
-# Optional: Override API URL for Swagger docs
 # API_URL=https://your-custom-domain.com/api
 ```
 
@@ -65,8 +64,6 @@ npm run dev
 The server will start on http://localhost:5001
 
 ## API Documentation
-
-Interactive Swagger UI available at: http://localhost:5001/api-docs
 
 Features:
 - Interactive API testing
@@ -227,7 +224,6 @@ JWT_SECRET=your-production-jwt-secret
 # Railway automatically provides:
 # - PORT
 # - RAILWAY_STATIC_URL (your app's domain)
-# Optional: Override API URL for Swagger docs
 # API_URL=https://your-custom-domain.com/api
 ```
 

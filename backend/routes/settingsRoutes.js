@@ -33,46 +33,10 @@ const validateAlertThreshold = [
     .withMessage('Alert threshold must be between 0 and 100')
 ];
 
-/**
- * @swagger
- * /api/settings:
- *   get:
- *     summary: Get settings
- *     tags: [Settings]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: User settings
- */
+// GET /api/settings - Get user settings  
 router.get('/', auth, settingsController.getSettings);
 
-/**
- * @swagger
- * /api/settings:
- *   put:
- *     summary: Update settings
- *     tags: [Settings]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               monthlyExpenseLimit:
- *                 type: number
- *               alertThreshold:
- *                 type: number
- *               currency:
- *                 type: string
- *                 enum: [LKR, USD, EUR, GBP]
- *     responses:
- *       200:
- *         description: Settings updated
- */
+// PUT /api/settings - Update user settings
 router.put('/', auth, validateSettings, settingsController.updateSettings);
 
 // GET /api/settings/monthly-limit - Get monthly expense limit
