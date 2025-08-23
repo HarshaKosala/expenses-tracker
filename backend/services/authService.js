@@ -6,7 +6,7 @@ class AuthService {
   async register(userData) {
     const { username, email, password } = userData;
 
-    // Check if user already exists
+    // Check for existing user
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) {
       throw new Error('User with this email already exists');
@@ -50,7 +50,7 @@ class AuthService {
       throw new Error('Invalid credentials');
     }
 
-    // Check password
+    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       throw new Error('Invalid credentials');

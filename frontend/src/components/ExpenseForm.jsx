@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, DollarSign, Calendar, Tag, FileText } from 'lucide-react'
 
-const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
+const ExpenseForm = ({ expense, onSubmit, onCancel, currency = 'LKR' }) => {
   const [formData, setFormData] = useState({
     description: '',
     amount: '',
@@ -22,7 +22,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
         description: expense.description,
         amount: expense.amount.toString(),
         type: expense.type,
-        date: format(new Date(expense.date), 'yyyy-MM-dd')
+        date: formatDate(new Date(expense.date), 'yyyy-MM-dd')
       })
     } else {
       // Set default date to today for new expenses
@@ -30,12 +30,12 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
         description: '',
         amount: '',
         type: '',
-        date: format(new Date(), 'yyyy-MM-dd')
+        date: formatDate(new Date(), 'yyyy-MM-dd')
       })
     }
   }, [expense])
 
-  const format = (date, formatStr) => {
+  const formatDate = (date, formatStr) => {
     const d = new Date(date)
     const year = d.getFullYear()
     const month = String(d.getMonth() + 1).padStart(2, '0')
@@ -158,7 +158,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
             {/* Amount */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Amount (LKR)
+                Amount ({currency})
               </label>
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -214,7 +214,7 @@ const ExpenseForm = ({ expense, onSubmit, onCancel }) => {
                   name="date"
                   value={formData.date}
                   onChange={handleChange}
-                  max={format(new Date(), 'yyyy-MM-dd')}
+                  max={formatDate(new Date(), 'yyyy-MM-dd')}
                   className={`input pl-10 ${errors.date ? 'border-danger-500' : ''}`}
                 />
               </div>

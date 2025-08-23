@@ -21,6 +21,7 @@ import {
 } from 'chart.js'
 import toast from 'react-hot-toast'
 import { format } from 'date-fns'
+import { formatCurrency } from '../utils/helpers'
 
 ChartJS.register(
   ArcElement,
@@ -36,6 +37,7 @@ const Dashboard = () => {
   const [statistics, setStatistics] = useState(null)
   const [monthlyLimit, setMonthlyLimit] = useState(null)
   const [expensesByType, setExpensesByType] = useState([])
+  const [settings, setSettings] = useState({ currency: 'LKR' })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -45,15 +47,17 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true)
-      const [statsData, limitData, typeData] = await Promise.all([
+      const [statsData, limitData, typeData, settingsData] = await Promise.all([
         expenseAPI.getStatistics(),
         expenseAPI.checkMonthlyLimit(),
-        expenseAPI.getExpensesByType()
+        expenseAPI.getExpensesByType(),
+        settingsAPI.getSettings()
       ])
 
       setStatistics(statsData.data)
       setMonthlyLimit(limitData.data)
       setExpensesByType(typeData.data)
+      setSettings(settingsData.data)
     } catch (error) {
       toast.error('Failed to load dashboard data')
       console.error('Dashboard data error:', error)
@@ -62,12 +66,7 @@ const Dashboard = () => {
     }
   }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'LKR'
-    }).format(amount)
-  }
+
 
   const getChartData = () => {
     if (!expensesByType.length) return null
@@ -101,7 +100,7 @@ const Dashboard = () => {
           label: function(context) {
             const label = context.label || ''
             const value = context.parsed
-            return `${label}: ${formatCurrency(value)}`
+            return `${label}: ${formatCurrency(value, settings.currency)}`
           }
         }
       }
@@ -147,12 +146,12 @@ const Dashboard = () => {
                 monthlyLimit.isLimitExceeded ? 'text-danger-700' : 'text-warning-700'
               }`}>
                 <p>
-                  You've spent {formatCurrency(monthlyLimit.monthlyTotal)} out of {formatCurrency(monthlyLimit.monthlyLimit)} 
-                  ({monthlyLimit.percentageUsed}% of your monthly limit)
+                                  You've spent {formatCurrency(monthlyLimit.monthlyTotal, settings.currency)} out of {formatCurrency(monthlyLimit.monthlyLimit, settings.currency)} 
+                ({monthlyLimit.percentageUsed}% of your monthly limit)
                 </p>
                 {!monthlyLimit.isLimitExceeded && (
                   <p className="mt-1">
-                    Remaining: {formatCurrency(monthlyLimit.remaining)}
+                    Remaining: {formatCurrency(monthlyLimit.remaining, settings.currency)}
                   </p>
                 )}
               </div>
@@ -172,7 +171,7 @@ const Dashboard = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500 pt-5">Total Expenses</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {statistics ? formatCurrency(statistics.totalExpenses) : 'LKR 0.00'}
+                  {statistics ? formatCurrency(statistics.totalExpenses, settings.currency) : `${settings.currency} 0.00`}
                 </p>
               </div>
             </div>
@@ -188,7 +187,7 @@ const Dashboard = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500 pt-5">This Month</p>
                 <p className="text-2xl font-semibold text-gray-900">
-                  {monthlyLimit ? formatCurrency(monthlyLimit.monthlyTotal) : 'LKR 0.00'}
+                  {monthlyLimit ? formatCurrency(monthlyLimit.monthlyTotal, settings.currency) : `${settings.currency} 0.00`}
                 </p>
               </div>
             </div>
@@ -277,7 +276,7 @@ const Dashboard = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-gray-900">
-                        {formatCurrency(category.total)}
+                        {formatCurrency(category.total, settings.currency)}
                       </p>
                       <p className="text-xs text-gray-500">
                         {category.count} transaction{category.count !== 1 ? 's' : ''}

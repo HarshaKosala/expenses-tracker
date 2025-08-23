@@ -81,7 +81,7 @@ router.get('/:id', auth, validateExpenseId, expenseController.getExpenseById);
 // PUT /api/expenses/:id - Update expense
 router.put('/:id', auth, validateExpenseId, validateExpense, expenseController.updateExpense);
 
-// DELETE /api/expenses/:id - Delete expense
-router.delete('/:id', auth, validateExpenseId, expenseController.deleteExpense);
+// DELETE /api/expenses/:id - Remove expense
+router.delete('/:id', auth, validateExpenseId, expenseController.removeExpense);
 
 module.exports = router; 

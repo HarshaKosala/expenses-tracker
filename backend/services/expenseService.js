@@ -2,65 +2,67 @@ const expenseRepository = require('../repositories/expenseRepository');
 const settingsRepository = require('../repositories/settingsRepository');
 
 class ExpenseService {
-  // Create a new expense
   async createExpense(expenseData, userId) {
     try {
-      const expense = await expenseRepository.create({ ...expenseData, user: userId });
+      const expense = await expenseRepository.createExpense({ ...expenseData, user: userId });
+      console.log(`Expense created for user ${userId}: ${expense.description}`);
       return expense;
     } catch (error) {
+      console.log('Error in createExpense service:', error.message);
       throw error;
     }
   }
 
-  // Get all expenses with filtering
   async getExpenses(filters = {}, userId) {
     try {
-      return await expenseRepository.findAll({ ...filters, userId });
+      return await expenseRepository.getExpenses({ ...filters, userId });
     } catch (error) {
+      console.log('Error in getExpenses service:', error.message);
       throw error;
     }
   }
 
-  // Get expense by ID
   async getExpenseById(id, userId) {
     try {
-      const expense = await expenseRepository.findById(id, userId);
+      const expense = await expenseRepository.getExpenseById(id, userId);
       if (!expense) {
         throw new Error('Expense not found');
       }
       return expense;
     } catch (error) {
+      console.log('Error in getExpenseById service:', error.message);
       throw error;
     }
   }
 
-  // Update expense
   async updateExpense(id, updateData, userId) {
     try {
-      const expense = await expenseRepository.update(id, updateData, userId);
+      const expense = await expenseRepository.updateExpense(id, updateData, userId);
       if (!expense) {
         throw new Error('Expense not found');
       }
+      console.log(`Expense ${id} updated for user ${userId}`);
       return expense;
     } catch (error) {
+      console.log('Error in updateExpense service:', error.message);
       throw error;
     }
   }
 
-  // Delete expense
-  async deleteExpense(id, userId) {
+  async removeExpense(id, userId) {
     try {
-      const expense = await expenseRepository.delete(id, userId);
+      const expense = await expenseRepository.removeExpense(id, userId);
       if (!expense) {
         throw new Error('Expense not found');
       }
+      console.log(`Expense ${id} removed for user ${userId}`);
       return expense;
     } catch (error) {
+      console.log('Error in removeExpense service:', error.message);
       throw error;
     }
   }
 
-  // Get expenses for current month
   async getCurrentMonthExpenses(userId) {
     try {
       const currentDate = new Date();
@@ -69,46 +71,46 @@ class ExpenseService {
       
       return await expenseRepository.getExpensesByMonth(year, month, userId);
     } catch (error) {
+      console.log('Error in getCurrentMonthExpenses service:', error.message);
       throw error;
     }
   }
 
-  // Get total expenses for current month
   async getCurrentMonthTotal(userId) {
     try {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
       
-      return await expenseRepository.getTotalExpensesByMonth(year, month, userId);
+      return await expenseRepository.getMonthlyTotal(year, month, userId);
     } catch (error) {
+      console.log('Error in getCurrentMonthTotal service:', error.message);
       throw error;
     }
   }
 
-  // Get expenses by type for current month
   async getCurrentMonthExpensesByType(userId) {
     try {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
       
-      return await expenseRepository.getExpensesByTypeForMonth(year, month, userId);
+      return await expenseRepository.getMonthlyExpensesByType(year, month, userId);
     } catch (error) {
+      console.log('Error in getCurrentMonthExpensesByType service:', error.message);
       throw error;
     }
   }
 
-  // Get expense statistics
   async getStatistics(userId) {
     try {
-      return await expenseRepository.getStatistics(userId);
+      return await expenseRepository.getExpenseStats(userId);
     } catch (error) {
+      console.log('Error in getStatistics service:', error.message);
       throw error;
     }
   }
 
-  // Check if monthly limit is exceeded
   async checkMonthlyLimit(userId) {
     try {
       const [monthlyTotal, monthlyLimit, alertThreshold] = await Promise.all([
@@ -130,20 +132,20 @@ class ExpenseService {
         remaining: monthlyLimit - monthlyTotal
       };
     } catch (error) {
+      console.log('Error in checkMonthlyLimit service:', error.message);
       throw error;
     }
   }
 
-  // Get top expense categories
   async getTopCategories(limit = 5, userId) {
     try {
       return await expenseRepository.getTopCategories(limit, userId);
     } catch (error) {
+      console.log('Error in getTopCategories service:', error.message);
       throw error;
     }
   }
 
-  // Validate expense data
   validateExpenseData(expenseData) {
     const errors = [];
 

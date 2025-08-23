@@ -2,10 +2,9 @@ const settingsService = require('../services/settingsService');
 const { validationResult } = require('express-validator');
 
 class SettingsController {
-  // Get all settings
   async getSettings(req, res) {
     try {
-      const settings = await settingsService.getSettings(req.user._id);
+      const settings = await settingsService.getUserSettings(req.user._id);
       
       res.json({
         success: true,
@@ -22,7 +21,6 @@ class SettingsController {
     }
   }
 
-  // Update settings
   async updateSettings(req, res) {
     try {
       const errors = validationResult(req);
@@ -35,7 +33,7 @@ class SettingsController {
       }
 
       const updateData = req.body;
-      const settings = await settingsService.updateSettings(updateData, req.user._id);
+      const settings = await settingsService.updateUserSettings(updateData, req.user._id);
       
       res.json({
         success: true,

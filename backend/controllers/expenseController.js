@@ -138,19 +138,18 @@ class ExpenseController {
     }
   }
 
-  // Delete expense
-  async deleteExpense(req, res) {
+  async removeExpense(req, res) {
     try {
       const { id } = req.params;
-      const expense = await expenseService.deleteExpense(id, req.user._id);
+      const expense = await expenseService.removeExpense(id, req.user._id);
       
       res.json({
         success: true,
-        message: 'Expense deleted successfully',
+        message: 'Expense removed successfully',
         data: expense
       });
     } catch (error) {
-      console.error('Delete expense error:', error);
+      console.error('Remove expense error:', error);
       if (error.message === 'Expense not found') {
         return res.status(404).json({
           success: false,
@@ -159,7 +158,7 @@ class ExpenseController {
       }
       res.status(500).json({
         success: false,
-        message: 'Failed to delete expense',
+        message: 'Failed to remove expense',
         error: error.message
       });
     }

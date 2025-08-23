@@ -48,12 +48,12 @@ const expenseSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Index for better query performance
+// Performance indexes
 expenseSchema.index({ user: 1, date: -1 });
 expenseSchema.index({ user: 1, type: 1 });
 expenseSchema.index({ user: 1, date: -1, type: 1 });
 
-// Virtual for formatted date
+// Format helpers
 expenseSchema.virtual('formattedDate').get(function() {
   return this.date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -62,7 +62,6 @@ expenseSchema.virtual('formattedDate').get(function() {
   });
 });
 
-// Virtual for formatted amount
 expenseSchema.virtual('formattedAmount').get(function() {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',

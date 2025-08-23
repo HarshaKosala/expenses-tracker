@@ -45,8 +45,8 @@ export const expenseAPI = {
   // Update expense
   updateExpense: (id, expenseData) => api.put(`/expenses/${id}`, expenseData),
   
-  // Delete expense
-  deleteExpense: (id) => api.delete(`/expenses/${id}`),
+  // Remove expense
+  removeExpense: (id) => api.delete(`/expenses/${id}`),
   
   // Get current month expenses
   getCurrentMonthExpenses: () => api.get('/expenses/current-month'),
