@@ -5,6 +5,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const connectDB = require('./config/database');
+const authRoutes = require('./routes/authRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/settings', settingsRoutes);
 

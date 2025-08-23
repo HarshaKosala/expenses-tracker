@@ -26,7 +26,7 @@ class ExpenseController {
         });
       }
 
-      const expense = await expenseService.createExpense(expenseData);
+      const expense = await expenseService.createExpense(expenseData, req.user._id);
       
       res.status(201).json({
         success: true,
@@ -55,7 +55,7 @@ class ExpenseController {
         skip: req.query.skip
       };
 
-      const expenses = await expenseService.getExpenses(filters);
+      const expenses = await expenseService.getExpenses(filters, req.user._id);
       
       res.json({
         success: true,
@@ -77,7 +77,7 @@ class ExpenseController {
   async getExpenseById(req, res) {
     try {
       const { id } = req.params;
-      const expense = await expenseService.getExpenseById(id);
+      const expense = await expenseService.getExpenseById(id, req.user._id);
       
       res.json({
         success: true,
@@ -115,7 +115,7 @@ class ExpenseController {
       const { id } = req.params;
       const updateData = req.body;
 
-      const expense = await expenseService.updateExpense(id, updateData);
+      const expense = await expenseService.updateExpense(id, updateData, req.user._id);
       
       res.json({
         success: true,
@@ -142,7 +142,7 @@ class ExpenseController {
   async deleteExpense(req, res) {
     try {
       const { id } = req.params;
-      const expense = await expenseService.deleteExpense(id);
+      const expense = await expenseService.deleteExpense(id, req.user._id);
       
       res.json({
         success: true,
@@ -168,7 +168,7 @@ class ExpenseController {
   // Get current month expenses
   async getCurrentMonthExpenses(req, res) {
     try {
-      const expenses = await expenseService.getCurrentMonthExpenses();
+      const expenses = await expenseService.getCurrentMonthExpenses(req.user._id);
       
       res.json({
         success: true,
@@ -189,7 +189,7 @@ class ExpenseController {
   // Get expense statistics
   async getStatistics(req, res) {
     try {
-      const statistics = await expenseService.getStatistics();
+      const statistics = await expenseService.getStatistics(req.user._id);
       
       res.json({
         success: true,
@@ -209,7 +209,7 @@ class ExpenseController {
   // Check monthly limit
   async checkMonthlyLimit(req, res) {
     try {
-      const limitInfo = await expenseService.checkMonthlyLimit();
+      const limitInfo = await expenseService.checkMonthlyLimit(req.user._id);
       
       res.json({
         success: true,
@@ -229,7 +229,7 @@ class ExpenseController {
   // Get expenses by type for current month
   async getCurrentMonthExpensesByType(req, res) {
     try {
-      const expensesByType = await expenseService.getCurrentMonthExpensesByType();
+      const expensesByType = await expenseService.getCurrentMonthExpensesByType(req.user._id);
       
       res.json({
         success: true,
@@ -250,7 +250,7 @@ class ExpenseController {
   async getTopCategories(req, res) {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit) : 5;
-      const topCategories = await expenseService.getTopCategories(limit);
+      const topCategories = await expenseService.getTopCategories(limit, req.user._id);
       
       res.json({
         success: true,

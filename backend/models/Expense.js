@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const expenseSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   description: {
     type: String,
     required: [true, 'Description is required'],
@@ -44,9 +49,9 @@ const expenseSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-expenseSchema.index({ date: -1 });
-expenseSchema.index({ type: 1 });
-expenseSchema.index({ date: -1, type: 1 });
+expenseSchema.index({ user: 1, date: -1 });
+expenseSchema.index({ user: 1, type: 1 });
+expenseSchema.index({ user: 1, date: -1, type: 1 });
 
 // Virtual for formatted date
 expenseSchema.virtual('formattedDate').get(function() {

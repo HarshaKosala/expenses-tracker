@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const settingsSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   monthlyExpenseLimit: {
     type: Number,
     required: true,
@@ -28,11 +33,11 @@ const settingsSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Ensure only one settings document exists
-settingsSchema.statics.getSettings = async function() {
-  let settings = await this.findOne();
+// Ensure only one settings document exists per user
+settingsSchema.statics.getSettings = async function(userId) {
+  let settings = await this.findOne({ user: userId });
   if (!settings) {
-    settings = await this.create({});
+    settings = await this.create({ user: userId });
   }
   return settings;
 };

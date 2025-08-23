@@ -1,6 +1,7 @@
 const express = require('express');
 const { body } = require('express-validator');
 const settingsController = require('../controllers/settingsController');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -34,21 +35,21 @@ const validateAlertThreshold = [
 
 // Routes
 // GET /api/settings - Get all settings
-router.get('/', settingsController.getSettings);
+router.get('/', auth, settingsController.getSettings);
 
 // PUT /api/settings - Update settings
-router.put('/', validateSettings, settingsController.updateSettings);
+router.put('/', auth, validateSettings, settingsController.updateSettings);
 
 // GET /api/settings/monthly-limit - Get monthly expense limit
-router.get('/monthly-limit', settingsController.getMonthlyLimit);
+router.get('/monthly-limit', auth, settingsController.getMonthlyLimit);
 
 // PUT /api/settings/monthly-limit - Update monthly expense limit
-router.put('/monthly-limit', validateMonthlyLimit, settingsController.updateMonthlyLimit);
+router.put('/monthly-limit', auth, validateMonthlyLimit, settingsController.updateMonthlyLimit);
 
 // GET /api/settings/alert-threshold - Get alert threshold
-router.get('/alert-threshold', settingsController.getAlertThreshold);
+router.get('/alert-threshold', auth, settingsController.getAlertThreshold);
 
 // PUT /api/settings/alert-threshold - Update alert threshold
-router.put('/alert-threshold', validateAlertThreshold, settingsController.updateAlertThreshold);
+router.put('/alert-threshold', auth, validateAlertThreshold, settingsController.updateAlertThreshold);
 
 module.exports = router; 
