@@ -33,7 +33,6 @@ const settingsSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Get or create user settings
 settingsSchema.statics.getSettings = async function(userId) {
   let settings = await this.findOne({ user: userId });
   if (!settings) {

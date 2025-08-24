@@ -20,10 +20,8 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       if (token) {
         try {
-          // Set token in API headers
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
-          // Verify token by getting user profile
           const response = await api.get('/auth/profile');
           setUser(response.data);
         } catch (error) {
@@ -42,14 +40,11 @@ export const AuthProvider = ({ children }) => {
       const response = await api.post('/auth/login', credentials);
       const { token: newToken, user: userData } = response.data;
       
-      // Store token
       localStorage.setItem('token', newToken);
       setToken(newToken);
       
-      // Set token in API headers
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
       
-      // Set user
       setUser(userData);
       
       return { success: true };
@@ -64,10 +59,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await api.post('/auth/register', userData);
-      
-      // Don't automatically log in the user after registration
-      // Just return success - the user will need to login separately
-      
+          
       return { success: true };
     } catch (error) {
       return { 

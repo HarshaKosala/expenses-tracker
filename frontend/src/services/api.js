@@ -31,7 +31,6 @@ api.interceptors.response.use(
   }
 )
 
-// Expense API
 export const expenseAPI = {
   // Get all expenses
   getExpenses: (filters = {}) => api.get('/expenses', { params: filters }),
@@ -64,7 +63,6 @@ export const expenseAPI = {
   getTopCategories: (limit = 5) => api.get('/expenses/top-categories', { params: { limit } }),
 }
 
-// Settings API
 export const settingsAPI = {
   // Get all settings
   getSettings: () => api.get('/settings'),

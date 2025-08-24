@@ -50,7 +50,6 @@ class SettingsController {
     }
   }
 
-  // Get monthly expense limit
   async getMonthlyLimit(req, res) {
     try {
       const limit = await settingsService.getMonthlyLimit(req.user._id);
@@ -70,7 +69,6 @@ class SettingsController {
     }
   }
 
-  // Update monthly expense limit
   async updateMonthlyLimit(req, res) {
     try {
       const errors = validationResult(req);
@@ -100,7 +98,6 @@ class SettingsController {
     }
   }
 
-  // Get alert threshold
   async getAlertThreshold(req, res) {
     try {
       const threshold = await settingsService.getAlertThreshold(req.user._id);
@@ -120,7 +117,6 @@ class SettingsController {
     }
   }
 
-  // Update alert threshold
   async updateAlertThreshold(req, res) {
     try {
       const errors = validationResult(req);

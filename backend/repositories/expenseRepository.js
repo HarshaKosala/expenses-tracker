@@ -15,7 +15,6 @@ class ExpenseRepository {
     try {
       const query = { user: filters.userId };
       
-      // Build date filters
       if (filters.startDate && filters.endDate) {
         query.date = {
           $gte: new Date(filters.startDate),
@@ -27,7 +26,6 @@ class ExpenseRepository {
         query.date = { $lte: new Date(filters.endDate) };
       }
 
-      // Add type and description filters
       if (filters.type) {
         query.type = filters.type;
       }

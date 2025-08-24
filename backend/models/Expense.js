@@ -48,12 +48,10 @@ const expenseSchema = new mongoose.Schema({
   toObject: { virtuals: true }
 });
 
-// Performance indexes
 expenseSchema.index({ user: 1, date: -1 });
 expenseSchema.index({ user: 1, type: 1 });
 expenseSchema.index({ user: 1, date: -1, type: 1 });
 
-// Format helpers
 expenseSchema.virtual('formattedDate').get(function() {
   return this.date.toLocaleDateString('en-US', {
     year: 'numeric',

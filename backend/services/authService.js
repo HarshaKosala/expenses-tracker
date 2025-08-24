@@ -6,7 +6,6 @@ class AuthService {
   async register(userData) {
     const { username, email, password } = userData;
 
-    // Check for existing user
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) {
       throw new Error('User with this email already exists');
@@ -17,18 +16,15 @@ class AuthService {
       throw new Error('Username already taken');
     }
 
-    // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create user
     const user = await userRepository.createUser({
       username,
       email,
       password: hashedPassword
     });
 
-    // Generate token
     const token = this.generateToken(user._id);
 
     return {
@@ -44,19 +40,16 @@ class AuthService {
   async login(credentials) {
     const { email, password } = credentials;
 
-    // Find user
     const user = await userRepository.findByEmail(email);
     if (!user) {
       throw new Error('Invalid credentials');
     }
 
-    // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       throw new Error('Invalid credentials');
     }
 
-    // Generate token
     const token = this.generateToken(user._id);
 
     return {

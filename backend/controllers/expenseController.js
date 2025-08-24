@@ -2,7 +2,6 @@ const expenseService = require('../services/expenseService');
 const { validationResult } = require('express-validator');
 
 class ExpenseController {
-  // Create a new expense
   async createExpense(req, res) {
     try {
       const errors = validationResult(req);
@@ -16,7 +15,6 @@ class ExpenseController {
 
       const expenseData = req.body;
       
-      // Additional validation
       const validationErrors = expenseService.validateExpenseData(expenseData);
       if (validationErrors.length > 0) {
         return res.status(400).json({
@@ -43,7 +41,6 @@ class ExpenseController {
     }
   }
 
-  // Get all expenses with optional filtering
   async getExpenses(req, res) {
     try {
       const filters = {
@@ -73,7 +70,6 @@ class ExpenseController {
     }
   }
 
-  // Get expense by ID
   async getExpenseById(req, res) {
     try {
       const { id } = req.params;
@@ -100,7 +96,6 @@ class ExpenseController {
     }
   }
 
-  // Update expense
   async updateExpense(req, res) {
     try {
       const errors = validationResult(req);
@@ -164,7 +159,6 @@ class ExpenseController {
     }
   }
 
-  // Get current month expenses
   async getCurrentMonthExpenses(req, res) {
     try {
       const expenses = await expenseService.getCurrentMonthExpenses(req.user._id);
@@ -185,7 +179,6 @@ class ExpenseController {
     }
   }
 
-  // Get expense statistics
   async getStatistics(req, res) {
     try {
       const statistics = await expenseService.getStatistics(req.user._id);
@@ -205,7 +198,6 @@ class ExpenseController {
     }
   }
 
-  // Check monthly limit
   async checkMonthlyLimit(req, res) {
     try {
       const limitInfo = await expenseService.checkMonthlyLimit(req.user._id);
@@ -225,7 +217,6 @@ class ExpenseController {
     }
   }
 
-  // Get expenses by type for current month
   async getCurrentMonthExpensesByType(req, res) {
     try {
       const expensesByType = await expenseService.getCurrentMonthExpensesByType(req.user._id);
@@ -245,7 +236,6 @@ class ExpenseController {
     }
   }
 
-  // Get top categories
   async getTopCategories(req, res) {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit) : 5;

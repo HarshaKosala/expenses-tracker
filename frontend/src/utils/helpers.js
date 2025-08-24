@@ -1,4 +1,3 @@
-// Format currency for display
 export const formatCurrency = (amount, currency = 'LKR') => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -6,7 +5,6 @@ export const formatCurrency = (amount, currency = 'LKR') => {
   }).format(amount)
 }
 
-// Format date for display
 export const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -15,7 +13,6 @@ export const formatDate = (date) => {
   })
 }
 
-// Get color for expense type
 export const getTypeColor = (type) => {
   const colors = {
     Food: 'text-green-600 bg-green-100',
