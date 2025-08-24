@@ -2,10 +2,9 @@ const settingsService = require('../services/settingsService');
 const { validationResult } = require('express-validator');
 
 class SettingsController {
-  // Get all settings
   async getSettings(req, res) {
     try {
-      const settings = await settingsService.getSettings();
+      const settings = await settingsService.getUserSettings(req.user._id);
       
       res.json({
         success: true,
@@ -22,7 +21,6 @@ class SettingsController {
     }
   }
 
-  // Update settings
   async updateSettings(req, res) {
     try {
       const errors = validationResult(req);
@@ -35,7 +33,7 @@ class SettingsController {
       }
 
       const updateData = req.body;
-      const settings = await settingsService.updateSettings(updateData);
+      const settings = await settingsService.updateUserSettings(updateData, req.user._id);
       
       res.json({
         success: true,
@@ -52,10 +50,9 @@ class SettingsController {
     }
   }
 
-  // Get monthly expense limit
   async getMonthlyLimit(req, res) {
     try {
-      const limit = await settingsService.getMonthlyLimit();
+      const limit = await settingsService.getMonthlyLimit(req.user._id);
       
       res.json({
         success: true,
@@ -72,7 +69,6 @@ class SettingsController {
     }
   }
 
-  // Update monthly expense limit
   async updateMonthlyLimit(req, res) {
     try {
       const errors = validationResult(req);
@@ -85,7 +81,7 @@ class SettingsController {
       }
 
       const { monthlyExpenseLimit } = req.body;
-      const settings = await settingsService.updateMonthlyLimit(monthlyExpenseLimit);
+      const settings = await settingsService.updateMonthlyLimit(monthlyExpenseLimit, req.user._id);
       
       res.json({
         success: true,
@@ -102,10 +98,9 @@ class SettingsController {
     }
   }
 
-  // Get alert threshold
   async getAlertThreshold(req, res) {
     try {
-      const threshold = await settingsService.getAlertThreshold();
+      const threshold = await settingsService.getAlertThreshold(req.user._id);
       
       res.json({
         success: true,
@@ -122,7 +117,6 @@ class SettingsController {
     }
   }
 
-  // Update alert threshold
   async updateAlertThreshold(req, res) {
     try {
       const errors = validationResult(req);
@@ -135,7 +129,7 @@ class SettingsController {
       }
 
       const { alertThreshold } = req.body;
-      const settings = await settingsService.updateAlertThreshold(alertThreshold);
+      const settings = await settingsService.updateAlertThreshold(alertThreshold, req.user._id);
       
       res.json({
         success: true,

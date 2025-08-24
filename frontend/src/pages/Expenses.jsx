@@ -9,16 +9,18 @@ import {
   DollarSign,
   Tag
 } from 'lucide-react'
-import { expenseAPI } from '../services/api'
+import { expenseAPI, settingsAPI } from '../services/api'
 import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 import ExpenseForm from '../components/ExpenseForm'
+import { formatCurrency, formatDate, getTypeColor } from '../utils/helpers'
 
 const Expenses = () => {
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [editingExpense, setEditingExpense] = useState(null)
+  const [settings, setSettings] = useState({ currency: 'LKR' })
   const [filters, setFilters] = useState({
     description: '',
     type: '',
@@ -33,6 +35,7 @@ const Expenses = () => {
 
   useEffect(() => {
     loadExpenses()
+    loadSettings()
   }, [filters])
 
   const loadExpenses = async () => {
@@ -48,18 +51,27 @@ const Expenses = () => {
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this expense?')) {
+  const loadSettings = async () => {
+    try {
+      const response = await settingsAPI.getSettings()
+      setSettings(response.data)
+    } catch (error) {
+      console.error('Load settings error:', error)
+    }
+  }
+
+  const handleRemove = async (id) => {
+    if (!window.confirm('Are you sure you want to remove this expense?')) {
       return
     }
 
     try {
-      await expenseAPI.deleteExpense(id)
-      toast.success('Expense deleted successfully')
+      await expenseAPI.removeExpense(id)
+      toast.success('Expense removed successfully')
       loadExpenses()
     } catch (error) {
-      toast.error('Failed to delete expense')
-      console.error('Delete expense error:', error)
+      toast.error('Failed to remove expense')
+      console.error('Remove expense error:', error)
     }
   }
 
@@ -91,26 +103,9 @@ const Expenses = () => {
     setEditingExpense(null)
   }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'LKR'
-    }).format(amount)
-  }
 
-  const getTypeColor = (type) => {
-    const colors = {
-      Food: 'bg-orange-100 text-orange-800',
-      Transport: 'bg-blue-100 text-blue-800',
-      Entertainment: 'bg-purple-100 text-purple-800',
-      Shopping: 'bg-pink-100 text-pink-800',
-      Bills: 'bg-red-100 text-red-800',
-      Healthcare: 'bg-green-100 text-green-800',
-      Education: 'bg-indigo-100 text-indigo-800',
-      Other: 'bg-gray-100 text-gray-800'
-    }
-    return colors[type] || colors.Other
-  }
+
+
 
   const clearFilters = () => {
     setFilters({
@@ -288,7 +283,7 @@ const Expenses = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-semibold text-gray-900">
-                          {formatCurrency(expense.amount)}
+                          {formatCurrency(expense.amount, settings.currency)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -305,7 +300,7 @@ const Expenses = () => {
                             <Edit className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(expense._id)}
+                            onClick={() => handleRemove(expense._id)}
                             className="text-danger-600 hover:text-danger-900"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -327,6 +322,7 @@ const Expenses = () => {
           expense={editingExpense}
           onSubmit={handleFormSubmit}
           onCancel={handleFormCancel}
+          currency={settings.currency}
         />
       )}
     </div>

@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
+const apiUrl = import.meta.env.VITE_API_URL 
+const API_BASE_URL = apiUrl || 'http://localhost:5001/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -30,7 +31,6 @@ api.interceptors.response.use(
   }
 )
 
-// Expense API
 export const expenseAPI = {
   // Get all expenses
   getExpenses: (filters = {}) => api.get('/expenses', { params: filters }),
@@ -44,8 +44,8 @@ export const expenseAPI = {
   // Update expense
   updateExpense: (id, expenseData) => api.put(`/expenses/${id}`, expenseData),
   
-  // Delete expense
-  deleteExpense: (id) => api.delete(`/expenses/${id}`),
+  // Remove expense
+  removeExpense: (id) => api.delete(`/expenses/${id}`),
   
   // Get current month expenses
   getCurrentMonthExpenses: () => api.get('/expenses/current-month'),
@@ -63,7 +63,6 @@ export const expenseAPI = {
   getTopCategories: (limit = 5) => api.get('/expenses/top-categories', { params: { limit } }),
 }
 
-// Settings API
 export const settingsAPI = {
   // Get all settings
   getSettings: () => api.get('/settings'),

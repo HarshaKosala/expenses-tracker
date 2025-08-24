@@ -5,12 +5,22 @@ import {
   Settings, 
   TrendingUp,
   Menu,
-  X
+  X,
+  LogOut,
+  User
 } from 'lucide-react'
 import { useState } from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import toast from 'react-hot-toast'
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    toast.success('Logged out successfully')
+  }
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
@@ -100,6 +110,21 @@ const Layout = () => {
               <div className="flex items-center gap-x-2">
                 <TrendingUp className="h-5 w-5 text-gray-400" />
                 <span className="text-sm font-medium text-gray-700">Personal Finance</span>
+              </div>
+              
+              {/* User info and logout */}
+              <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-2 text-sm text-gray-700">
+                  <User className="h-4 w-4" />
+                  <span>{user?.username || 'User'}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-x-1 px-2 py-1 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </button>
               </div>
             </div>
           </div>

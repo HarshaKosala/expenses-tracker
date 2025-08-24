@@ -45,13 +45,15 @@ npm install
 cp env.example .env
 ```
 
-2. Update the `.env` file with your MongoDB Atlas connection string:
+2. Update the `.env` file with your configuration:
 ```env
 MONGODB_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/expense-tracker?retryWrites=true&w=majority
 PORT=5001
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:5173
 DEFAULT_MONTHLY_LIMIT=10000
+JWT_SECRET=your-jwt-secret-key
+# API_URL=https://your-custom-domain.com/api
 ```
 
 ### 3. Start Development Server
@@ -61,12 +63,25 @@ npm run dev
 
 The server will start on http://localhost:5001
 
+## API Documentation
+
+Features:
+- Interactive API testing
+- Request/response examples
+- Authentication support
+- Works in both local and production
+
 ## 🔧 API Endpoints
 
 ### Health Check
 - `GET /api/health` - Check API status
 
-### Expenses
+### Authentication
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user and get JWT token
+- `GET /api/auth/profile` - Get current user profile (protected)
+
+### Expenses (Protected)
 - `GET /api/expenses` - Get all expenses with optional filtering
 - `POST /api/expenses` - Create a new expense
 - `GET /api/expenses/:id` - Get expense by ID
@@ -78,15 +93,26 @@ The server will start on http://localhost:5001
 - `GET /api/expenses/by-type` - Get expenses by type for current month
 - `GET /api/expenses/top-categories` - Get top expense categories
 
-### Settings
-- `GET /api/settings` - Get all settings
-- `PUT /api/settings` - Update settings
+### Settings (Protected)
+- `GET /api/settings` - Get user settings
+- `PUT /api/settings` - Update user settings
 - `GET /api/settings/monthly-limit` - Get monthly limit
 - `PUT /api/settings/monthly-limit` - Update monthly limit
 - `GET /api/settings/alert-threshold` - Get alert threshold
 - `PUT /api/settings/alert-threshold` - Update alert threshold
 
 ## 📊 Data Models
+
+### User Model
+```javascript
+{
+  username: String,      // Required, unique, 3-30 chars
+  email: String,         // Required, unique, valid email
+  password: String,      // Required, hashed with bcrypt
+  createdAt: Date,       // Auto-generated
+  updatedAt: Date        // Auto-generated
+}
+```
 
 ### Expense Model
 ```javascript
@@ -95,6 +121,7 @@ The server will start on http://localhost:5001
   amount: Number,         // Required, positive number
   type: String,          // Required, enum: Food, Transport, Entertainment, etc.
   date: Date,            // Required, cannot be future date
+  user: ObjectId,        // Required, reference to User
   createdAt: Date,       // Auto-generated
   updatedAt: Date        // Auto-generated
 }
@@ -106,10 +133,29 @@ The server will start on http://localhost:5001
   monthlyExpenseLimit: Number,  // Required, positive number
   currency: String,             // Default: 'LKR'
   alertThreshold: Number,       // Default: 90, range: 0-100
+  user: ObjectId,              // Required, reference to User
   createdAt: Date,             // Auto-generated
   updatedAt: Date              // Auto-generated
 }
 ```
+
+## 🔐 Authentication
+
+### JWT Token
+All protected endpoints require a JWT token in the Authorization header:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+### Getting a Token
+1. Register a new user: `POST /api/auth/register`
+2. Login to get token: `POST /api/auth/login`
+3. Use the returned token in subsequent requests
+
+### Protected Endpoints
+- All expense endpoints (`/api/expenses/*`)
+- All settings endpoints (`/api/settings/*`)
+- User profile endpoint (`/api/auth/profile`)
 
 ## 🔍 Query Parameters
 
@@ -121,7 +167,26 @@ The server will start on http://localhost:5001
 - `limit` - Limit number of results
 - `skip` - Skip number of results (for pagination)
 
-### Example Queries
+### Example Requests
+
+#### Authentication
+```bash
+# Register a new user
+curl -X POST http://localhost:5001/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "john_doe", "email": "john@example.com", "password": "password123"}'
+
+# Login to get JWT token
+curl -X POST http://localhost:5001/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "john@example.com", "password": "password123"}'
+
+# Use token for protected requests
+curl -X GET http://localhost:5001/api/expenses \
+  -H "Authorization: Bearer <your-jwt-token>"
+```
+
+#### Expense Queries
 ```bash
 # Get all food expenses
 GET /api/expenses?type=Food
@@ -155,6 +220,11 @@ MONGODB_URI=your-production-mongodb-uri
 PORT=5001
 NODE_ENV=production
 CORS_ORIGIN=https://your-frontend-domain.com
+JWT_SECRET=your-production-jwt-secret
+# Railway automatically provides:
+# - PORT
+# - RAILWAY_STATIC_URL (your app's domain)
+# API_URL=https://your-custom-domain.com/api
 ```
 
 ## 🧪 Testing

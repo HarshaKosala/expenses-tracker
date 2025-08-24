@@ -1,64 +1,64 @@
 const Settings = require('../models/Settings');
 
 class SettingsRepository {
-  // Get or create settings
-  async getSettings() {
+  async getUserSettings(userId) {
     try {
-      return await Settings.getSettings();
+      return await Settings.getSettings(userId);
     } catch (error) {
+      console.log('Error fetching user settings:', error.message);
       throw error;
     }
   }
 
-  // Update settings
-  async updateSettings(updateData) {
+  async updateUserSettings(updateData, userId) {
     try {
-      const settings = await Settings.getSettings();
+      const settings = await Settings.getSettings(userId);
       Object.assign(settings, updateData);
       return await settings.save();
     } catch (error) {
+      console.log('Error updating user settings:', error.message);
       throw error;
     }
   }
 
-  // Get monthly expense limit
-  async getMonthlyLimit() {
+  async getMonthlyLimit(userId) {
     try {
-      const settings = await Settings.getSettings();
+      const settings = await Settings.getSettings(userId);
       return settings.monthlyExpenseLimit;
     } catch (error) {
+      console.log('Error fetching monthly limit:', error.message);
       throw error;
     }
   }
 
-  // Update monthly expense limit
-  async updateMonthlyLimit(limit) {
+  async updateMonthlyLimit(limit, userId) {
     try {
-      const settings = await Settings.getSettings();
+      const settings = await Settings.getSettings(userId);
       settings.monthlyExpenseLimit = limit;
       return await settings.save();
     } catch (error) {
+      console.log('Error updating monthly limit:', error.message);
       throw error;
     }
   }
 
-  // Get alert threshold
-  async getAlertThreshold() {
+  async getAlertThreshold(userId) {
     try {
-      const settings = await Settings.getSettings();
+      const settings = await Settings.getSettings(userId);
       return settings.alertThreshold;
     } catch (error) {
+      console.log('Error fetching alert threshold:', error.message);
       throw error;
     }
   }
 
-  // Update alert threshold
-  async updateAlertThreshold(threshold) {
+  async updateAlertThreshold(threshold, userId) {
     try {
-      const settings = await Settings.getSettings();
+      const settings = await Settings.getSettings(userId);
       settings.alertThreshold = threshold;
       return await settings.save();
     } catch (error) {
+      console.log('Error updating alert threshold:', error.message);
       throw error;
     }
   }

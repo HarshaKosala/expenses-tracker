@@ -1,22 +1,20 @@
 const Expense = require('../models/Expense');
 
 class ExpenseRepository {
-  // Create a new expense
-  async create(expenseData) {
+  async createExpense(expenseData) {
     try {
       const expense = new Expense(expenseData);
       return await expense.save();
     } catch (error) {
+      console.log('Error creating expense:', error.message);
       throw error;
     }
   }
 
-  // Get all expenses with optional filtering
-  async findAll(filters = {}) {
+  async getExpenses(filters = {}) {
     try {
-      const query = {};
+      const query = { user: filters.userId };
       
-      // Date range filter
       if (filters.startDate && filters.endDate) {
         query.date = {
           $gte: new Date(filters.startDate),
@@ -28,12 +26,10 @@ class ExpenseRepository {
         query.date = { $lte: new Date(filters.endDate) };
       }
 
-      // Type filter
       if (filters.type) {
         query.type = filters.type;
       }
 
-      // Description search
       if (filters.description) {
         query.description = { $regex: filters.description, $options: 'i' };
       }
@@ -52,57 +48,58 @@ class ExpenseRepository {
 
       return await Expense.find(query, null, options);
     } catch (error) {
+      console.log('Error fetching expenses:', error.message);
       throw error;
     }
   }
 
-  // Get expense by ID
-  async findById(id) {
+  async getExpenseById(id, userId) {
     try {
-      return await Expense.findById(id);
+      return await Expense.findOne({ _id: id, user: userId });
     } catch (error) {
+      console.log('Error fetching expense by ID:', error.message);
       throw error;
     }
   }
 
-  // Update expense
-  async update(id, updateData) {
+  async updateExpense(id, updateData, userId) {
     try {
-      return await Expense.findByIdAndUpdate(
-        id,
+      return await Expense.findOneAndUpdate(
+        { _id: id, user: userId },
         updateData,
         { new: true, runValidators: true }
       );
     } catch (error) {
+      console.log('Error updating expense:', error.message);
       throw error;
     }
   }
 
-  // Delete expense
-  async delete(id) {
+  async removeExpense(id, userId) {
     try {
-      return await Expense.findByIdAndDelete(id);
+      return await Expense.findOneAndDelete({ _id: id, user: userId });
     } catch (error) {
+      console.log('Error removing expense:', error.message);
       throw error;
     }
   }
 
-  // Get expenses by month
-  async getExpensesByMonth(year, month) {
+  async getExpensesByMonth(year, month, userId) {
     try {
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
       return await Expense.find({
+        user: userId,
         date: { $gte: startDate, $lte: endDate }
       }).sort({ date: -1 });
     } catch (error) {
+      console.log('Error fetching monthly expenses:', error.message);
       throw error;
     }
   }
 
-  // Get total expenses by month
-  async getTotalExpensesByMonth(year, month) {
+  async getMonthlyTotal(year, month, userId) {
     try {
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59, 999);
@@ -110,6 +107,7 @@ class ExpenseRepository {
       const result = await Expense.aggregate([
         {
           $match: {
+            user: userId,
             date: { $gte: startDate, $lte: endDate }
           }
         },
@@ -123,12 +121,12 @@ class ExpenseRepository {
 
       return result.length > 0 ? result[0].total : 0;
     } catch (error) {
+      console.log('Error calculating monthly total:', error.message);
       throw error;
     }
   }
 
-  // Get expenses by type for current month
-  async getExpensesByTypeForMonth(year, month) {
+  async getMonthlyExpensesByType(year, month, userId) {
     try {
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59, 999);
@@ -136,6 +134,7 @@ class ExpenseRepository {
       return await Expense.aggregate([
         {
           $match: {
+            user: userId,
             date: { $gte: startDate, $lte: endDate }
           }
         },
@@ -151,14 +150,17 @@ class ExpenseRepository {
         }
       ]);
     } catch (error) {
+      console.log('Error fetching monthly expenses by type:', error.message);
       throw error;
     }
   }
 
-  // Get top expense categories
-  async getTopCategories(limit = 5) {
+  async getTopCategories(limit = 5, userId) {
     try {
       return await Expense.aggregate([
+        {
+          $match: { user: userId }
+        },
         {
           $group: {
             _id: '$type',
@@ -174,12 +176,12 @@ class ExpenseRepository {
         }
       ]);
     } catch (error) {
+      console.log('Error fetching top categories:', error.message);
       throw error;
     }
   }
 
-  // Get expense statistics
-  async getStatistics() {
+  async getExpenseStats(userId) {
     try {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
@@ -188,6 +190,9 @@ class ExpenseRepository {
       const [totalExpenses, monthlyTotal, topCategories] = await Promise.all([
         Expense.aggregate([
           {
+            $match: { user: userId }
+          },
+          {
             $group: {
               _id: null,
               total: { $sum: '$amount' },
@@ -195,8 +200,8 @@ class ExpenseRepository {
             }
           }
         ]),
-        this.getTotalExpensesByMonth(currentYear, currentMonth),
-        this.getTopCategories(5)
+        this.getMonthlyTotal(currentYear, currentMonth, userId),
+        this.getTopCategories(5, userId)
       ]);
 
       return {
@@ -206,6 +211,7 @@ class ExpenseRepository {
         topCategories
       };
     } catch (error) {
+      console.log('Error fetching expense stats:', error.message);
       throw error;
     }
   }

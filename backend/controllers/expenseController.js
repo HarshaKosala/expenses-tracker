@@ -2,7 +2,6 @@ const expenseService = require('../services/expenseService');
 const { validationResult } = require('express-validator');
 
 class ExpenseController {
-  // Create a new expense
   async createExpense(req, res) {
     try {
       const errors = validationResult(req);
@@ -16,7 +15,6 @@ class ExpenseController {
 
       const expenseData = req.body;
       
-      // Additional validation
       const validationErrors = expenseService.validateExpenseData(expenseData);
       if (validationErrors.length > 0) {
         return res.status(400).json({
@@ -26,7 +24,7 @@ class ExpenseController {
         });
       }
 
-      const expense = await expenseService.createExpense(expenseData);
+      const expense = await expenseService.createExpense(expenseData, req.user._id);
       
       res.status(201).json({
         success: true,
@@ -43,7 +41,6 @@ class ExpenseController {
     }
   }
 
-  // Get all expenses with optional filtering
   async getExpenses(req, res) {
     try {
       const filters = {
@@ -55,7 +52,7 @@ class ExpenseController {
         skip: req.query.skip
       };
 
-      const expenses = await expenseService.getExpenses(filters);
+      const expenses = await expenseService.getExpenses(filters, req.user._id);
       
       res.json({
         success: true,
@@ -73,11 +70,10 @@ class ExpenseController {
     }
   }
 
-  // Get expense by ID
   async getExpenseById(req, res) {
     try {
       const { id } = req.params;
-      const expense = await expenseService.getExpenseById(id);
+      const expense = await expenseService.getExpenseById(id, req.user._id);
       
       res.json({
         success: true,
@@ -100,7 +96,6 @@ class ExpenseController {
     }
   }
 
-  // Update expense
   async updateExpense(req, res) {
     try {
       const errors = validationResult(req);
@@ -115,7 +110,7 @@ class ExpenseController {
       const { id } = req.params;
       const updateData = req.body;
 
-      const expense = await expenseService.updateExpense(id, updateData);
+      const expense = await expenseService.updateExpense(id, updateData, req.user._id);
       
       res.json({
         success: true,
@@ -138,19 +133,18 @@ class ExpenseController {
     }
   }
 
-  // Delete expense
-  async deleteExpense(req, res) {
+  async removeExpense(req, res) {
     try {
       const { id } = req.params;
-      const expense = await expenseService.deleteExpense(id);
+      const expense = await expenseService.removeExpense(id, req.user._id);
       
       res.json({
         success: true,
-        message: 'Expense deleted successfully',
+        message: 'Expense removed successfully',
         data: expense
       });
     } catch (error) {
-      console.error('Delete expense error:', error);
+      console.error('Remove expense error:', error);
       if (error.message === 'Expense not found') {
         return res.status(404).json({
           success: false,
@@ -159,16 +153,15 @@ class ExpenseController {
       }
       res.status(500).json({
         success: false,
-        message: 'Failed to delete expense',
+        message: 'Failed to remove expense',
         error: error.message
       });
     }
   }
 
-  // Get current month expenses
   async getCurrentMonthExpenses(req, res) {
     try {
-      const expenses = await expenseService.getCurrentMonthExpenses();
+      const expenses = await expenseService.getCurrentMonthExpenses(req.user._id);
       
       res.json({
         success: true,
@@ -186,10 +179,9 @@ class ExpenseController {
     }
   }
 
-  // Get expense statistics
   async getStatistics(req, res) {
     try {
-      const statistics = await expenseService.getStatistics();
+      const statistics = await expenseService.getStatistics(req.user._id);
       
       res.json({
         success: true,
@@ -206,10 +198,9 @@ class ExpenseController {
     }
   }
 
-  // Check monthly limit
   async checkMonthlyLimit(req, res) {
     try {
-      const limitInfo = await expenseService.checkMonthlyLimit();
+      const limitInfo = await expenseService.checkMonthlyLimit(req.user._id);
       
       res.json({
         success: true,
@@ -226,10 +217,9 @@ class ExpenseController {
     }
   }
 
-  // Get expenses by type for current month
   async getCurrentMonthExpensesByType(req, res) {
     try {
-      const expensesByType = await expenseService.getCurrentMonthExpensesByType();
+      const expensesByType = await expenseService.getCurrentMonthExpensesByType(req.user._id);
       
       res.json({
         success: true,
@@ -246,11 +236,10 @@ class ExpenseController {
     }
   }
 
-  // Get top categories
   async getTopCategories(req, res) {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit) : 5;
-      const topCategories = await expenseService.getTopCategories(limit);
+      const topCategories = await expenseService.getTopCategories(limit, req.user._id);
       
       res.json({
         success: true,

@@ -4,6 +4,7 @@ A full-stack web application for tracking personal expenses with React frontend 
 
 ## Features
 
+- **User Authentication** (Register/Login with JWT)
 - Add, edit, and delete expenses
 - Categorize expenses (Food, Transport, Entertainment, etc.)
 - Dashboard with charts and statistics
@@ -58,6 +59,7 @@ MONGODB_URI=your-mongodb-connection-string
 PORT=5001
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:5173
+JWT_SECRET=your-jwt-secret-key
 ```
 
 **Frontend (.env)**
@@ -77,7 +79,12 @@ personal-expense-tracker/
 
 ## API Endpoints
 
+### Public
 - `GET /api/health` - Health check
+- `POST /api/auth/register` - Register user
+- `POST /api/auth/login` - Login user
+
+### Protected (Require JWT Token)
 - `GET /api/expenses` - Get all expenses
 - `POST /api/expenses` - Create expense
 - `PUT /api/expenses/:id` - Update expense
@@ -85,6 +92,7 @@ personal-expense-tracker/
 - `GET /api/expenses/statistics` - Get statistics
 - `GET /api/settings` - Get settings
 - `PUT /api/settings` - Update settings
+- `GET /api/auth/profile` - Get user profile
 
 ## Deployment
 

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { settingsAPI } from '../services/api'
 import toast from 'react-hot-toast'
+import { formatCurrency } from '../utils/helpers'
 
 const Settings = () => {
   const [settings, setSettings] = useState({
@@ -88,12 +89,7 @@ const Settings = () => {
     }
   }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: settings.currency
-    }).format(amount)
-  }
+
 
   if (loading) {
     return (
@@ -234,7 +230,7 @@ const Settings = () => {
           <div className="card-content">
             <div className="text-center">
               <p className="text-3xl font-bold text-primary-600">
-                {formatCurrency(settings.monthlyExpenseLimit)}
+                {formatCurrency(settings.monthlyExpenseLimit, settings.currency)}
               </p>
               <p className="text-sm text-gray-500 mt-2">
                 Maximum amount you can spend per month
@@ -260,7 +256,7 @@ const Settings = () => {
                 You'll be warned when you reach this percentage of your limit
               </p>
               <p className="text-sm text-gray-400 mt-1">
-                ({formatCurrency(settings.monthlyExpenseLimit * settings.alertThreshold / 100)})
+                ({formatCurrency(settings.monthlyExpenseLimit * settings.alertThreshold / 100, settings.currency)})
               </p>
             </div>
           </div>

@@ -1,77 +1,79 @@
 const settingsRepository = require('../repositories/settingsRepository');
 
 class SettingsService {
-  // Get all settings
-  async getSettings() {
+  async getUserSettings(userId) {
     try {
-      return await settingsRepository.getSettings();
+      return await settingsRepository.getUserSettings(userId);
     } catch (error) {
+      console.log('Error in getUserSettings service:', error.message);
       throw error;
     }
   }
 
-  // Update settings
-  async updateSettings(updateData) {
+  async updateUserSettings(updateData, userId) {
     try {
-      // Validate the update data
       const validationErrors = this.validateSettingsData(updateData);
       if (validationErrors.length > 0) {
         throw new Error(validationErrors.join(', '));
       }
 
-      return await settingsRepository.updateSettings(updateData);
+      const result = await settingsRepository.updateUserSettings(updateData, userId);
+      console.log(`Settings updated for user ${userId}`);
+      return result;
     } catch (error) {
+      console.log('Error in updateUserSettings service:', error.message);
       throw error;
     }
   }
 
-  // Get monthly expense limit
-  async getMonthlyLimit() {
+  async getMonthlyLimit(userId) {
     try {
-      return await settingsRepository.getMonthlyLimit();
+      return await settingsRepository.getMonthlyLimit(userId);
     } catch (error) {
+      console.log('Error in getMonthlyLimit service:', error.message);
       throw error;
     }
   }
 
-  // Update monthly expense limit
-  async updateMonthlyLimit(limit) {
+  async updateMonthlyLimit(limit, userId) {
     try {
-      // Validate the limit
       if (!limit || limit <= 0) {
         throw new Error('Monthly limit must be greater than 0');
       }
 
-      return await settingsRepository.updateMonthlyLimit(limit);
+      const result = await settingsRepository.updateMonthlyLimit(limit, userId);
+      console.log(`Monthly limit updated for user ${userId}: ${limit}`);
+      return result;
     } catch (error) {
+      console.log('Error in updateMonthlyLimit service:', error.message);
       throw error;
     }
   }
 
-  // Get alert threshold
-  async getAlertThreshold() {
+  async getAlertThreshold(userId) {
     try {
-      return await settingsRepository.getAlertThreshold();
+      return await settingsRepository.getAlertThreshold(userId);
     } catch (error) {
+      console.log('Error in getAlertThreshold service:', error.message);
       throw error;
     }
   }
 
-  // Update alert threshold
-  async updateAlertThreshold(threshold) {
+  async updateAlertThreshold(threshold, userId) {
     try {
-      // Validate the threshold
       if (threshold < 0 || threshold > 100) {
         throw new Error('Alert threshold must be between 0 and 100');
       }
 
-      return await settingsRepository.updateAlertThreshold(threshold);
+      const result = await settingsRepository.updateAlertThreshold(threshold, userId);
+      console.log(`Alert threshold updated for user ${userId}: ${threshold}%`);
+      return result;
     } catch (error) {
+      console.log('Error in updateAlertThreshold service:', error.message);
       throw error;
     }
   }
 
-  // Validate settings data
   validateSettingsData(settingsData) {
     const errors = [];
 

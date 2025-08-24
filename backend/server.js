@@ -5,6 +5,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 
 const connectDB = require('./config/database');
+const authRoutes = require('./routes/authRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 
@@ -14,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-// Middleware
+// Security & logging
 app.use(helmet());
 app.use(morgan('combined'));
 app.use(cors({
@@ -24,7 +25,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/settings', settingsRoutes);
 
@@ -43,7 +45,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// Handle 404s
 app.use('*', (req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });

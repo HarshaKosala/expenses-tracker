@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, param, query } = require('express-validator');
 const expenseController = require('../controllers/expenseController');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -52,35 +53,34 @@ const validateDateRange = [
     })
 ];
 
-// Routes
-// POST /api/expenses - Create a new expense
-router.post('/', validateExpense, expenseController.createExpense);
+// POST /api/expenses - Create new expense
+router.post('/', auth, validateExpense, expenseController.createExpense);
 
-// GET /api/expenses - Get all expenses with optional filtering
-router.get('/', validateDateRange, expenseController.getExpenses);
+// GET /api/expenses - Get expenses
+router.get('/', auth, validateDateRange, expenseController.getExpenses);
 
 // GET /api/expenses/current-month - Get current month expenses
-router.get('/current-month', expenseController.getCurrentMonthExpenses);
+router.get('/current-month', auth, expenseController.getCurrentMonthExpenses);
 
 // GET /api/expenses/statistics - Get expense statistics
-router.get('/statistics', expenseController.getStatistics);
+router.get('/statistics', auth, expenseController.getStatistics);
 
 // GET /api/expenses/monthly-limit - Check monthly limit
-router.get('/monthly-limit', expenseController.checkMonthlyLimit);
+router.get('/monthly-limit', auth, expenseController.checkMonthlyLimit);
 
 // GET /api/expenses/by-type - Get expenses by type for current month
-router.get('/by-type', expenseController.getCurrentMonthExpensesByType);
+router.get('/by-type', auth, expenseController.getCurrentMonthExpensesByType);
 
 // GET /api/expenses/top-categories - Get top expense categories
-router.get('/top-categories', expenseController.getTopCategories);
+router.get('/top-categories', auth, expenseController.getTopCategories);
 
 // GET /api/expenses/:id - Get expense by ID
-router.get('/:id', validateExpenseId, expenseController.getExpenseById);
+router.get('/:id', auth, validateExpenseId, expenseController.getExpenseById);
 
 // PUT /api/expenses/:id - Update expense
-router.put('/:id', validateExpenseId, validateExpense, expenseController.updateExpense);
+router.put('/:id', auth, validateExpenseId, validateExpense, expenseController.updateExpense);
 
-// DELETE /api/expenses/:id - Delete expense
-router.delete('/:id', validateExpenseId, expenseController.deleteExpense);
+// DELETE /api/expenses/:id - Remove expense
+router.delete('/:id', auth, validateExpenseId, expenseController.removeExpense);
 
 module.exports = router; 
